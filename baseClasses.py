@@ -138,11 +138,3 @@ class Match:
         return [self.participant1Points, self.participant2Points, self.winner]
 
 
-class Tournament:
-    def __init__(self, noisy, participants, roundPerMatch, payoffMatrix):
-        self.roundPerMatch = roundPerMatch
-        self.noisy = noisy
-        self.participants = participants
-        self.payoffMatrix = payoffMatrix
-        self.winner = None
-        self.score = None
