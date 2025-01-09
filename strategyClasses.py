@@ -54,7 +54,7 @@ class AlwaysDefect(Strategy):
 class RandomStrategy(Strategy):
     def __init__(self):
         super().__init__()
-        self.strategyNamae="Random Strategy"
+        self.strategyName="Random Strategy"
 
     def cooperationReaction(self):
         exec(random.choice(["self.defect()", "self.cooperate()"]))
@@ -90,7 +90,7 @@ class DoubleD(Strategy):
             
             self.defect()
         else:
-            self.cooperate
+            self.cooperate()
     
     def defectionReaction(self):
         self.cooperationReaction()
@@ -115,4 +115,57 @@ class GrimTrigger(Strategy):
     def defectionReaction(self):
         self.defected=True
         self.defect()
+
+# A strategy that shifts its move if it loses 
+
+class Pavlov(Strategy):
+    def __init__(self):
+        super().__init__()
+        self.strategyName="Pavlov"
+        self.lastMove="cooperate"
+        self.currentMove="self.cooperate()"
+
+    def cooperate(self):
+        self.lastMove="cooperate"
+        return "cooperate"
+    def defect(self):
+        self.lastMove="defect"
+        return "defect"
+    def startingReaction(self):
+        exec(self.currentMove)
+    def shiftMove(self):
+        if self.currentMove=="self.cooperate()":
+           self.currentMove="self.defect()"
+        else:
+            self.currentMove="self.cooperate()"
+    def cooperationReaction(self):
+        exec(self.currentMove)
+    def defectionReaction(self):
+        if(self.lastMove=="cooperate"):
+            self.shiftMove()
+            exec(self.currentMove)
+        else:
+            exec(self.currentMove)
+
+
+# A strategy that cooperates initially and then copies the opponents last move but occasioanlly cooperate even after they defect
+
+class GenerousTitForTat(Strategy):
+    def __init__(self):
+        super().__init__()
+        self.strategyName="Generous Tit for Tat"
+
+    def cooperationReaction(self):
+        self.cooperate()
+
+    def startingReaction(self):
+        self.cooperate()
+
+    def defectionReaction(self):
+        # Implement a percentage thing for 10% chance of cooperate
+        if random.random()>0.1:
+            self.defect()
+        else:
+            self.cooperate()
+
 
