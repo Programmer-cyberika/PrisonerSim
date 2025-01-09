@@ -1,3 +1,5 @@
+import itertools
+
 class Strategy:
     def __init__(self):
         self.strategyName = None
@@ -24,8 +26,7 @@ class Strategy:
 
 
 class Round:
-    def __init__(self, noisy, participant1, participant2, payoffMatrix, participant1PreReaction, participant2PreReaction):
-        self.noisy = noisy
+    def __init__(self, participant1, participant2, payoffMatrix, participant1PreReaction, participant2PreReaction):
         self.participant1 = participant1
         self.participant2 = participant2
         self.participant1Score = 0
@@ -88,8 +89,8 @@ class Round:
 
 
 class Match:
-    def __init__(self, noisy, participant1, participant2, rounds, payoffMatrix):
-        self.noisy = noisy
+    def __init__(self, participant1, participant2, rounds, payoffMatrix):
+
         self.participant1 = participant1
         self.participant2 = participant2
         self.rounds = rounds
@@ -138,3 +139,50 @@ class Match:
         return [self.participant1Points, self.participant2Points, self.winner]
 
 
+class Tournanment:
+    def __init__(self, participants, roundsPerMatch, payoffMatrix):
+
+        self.participants = participants
+        self.rounds = roundsPerMatch
+        self.payoffMatrix = payoffMatrix
+        self.results = {}
+        self.winner=None
+        self.score=dict()
+
+    def decideTournamnetWinner(self, leastOccur):
+        winnersList=list()
+        max_value=max(self.score.values())
+        
+        for key,values in self.score.items():
+                 if values==max_value:
+                     winnersList.append(key)
+        if len(winnersList)==1:
+            return winnersList[0]
+        else:
+            return winnersList
+
+    
+    def keepScore(self, participant, score):
+        if participant in self.score:
+              self.score[participant] += score
+        else:
+            self.score[participant] = score
+
+    def runMatch(self, participant1, participant2):
+        match_obj = Match(
+            noisy=self.noisy,
+            participant1=participant1,
+            participant2=participant2,
+            rounds=self.roundsPerMatch,
+            payoffMatrix=self.payoffMatrix,
+        )
+        match_obj.runRounds()
+        match_obj.decideWinner()
+        result = match_obj.returnResult()
+        self.keepScore(participant1.getStrategyName(), result[0])
+        self.keepScore(participant2.getStrategyName(), result[1])
+        
+
+    def runTournamnent(self):
+        for participant1, participant2 in list(itertools.combinations(self.participants,2)):
+            self.runMatch(participant1, participant2)
