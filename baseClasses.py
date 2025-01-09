@@ -16,11 +16,11 @@ class Strategy:
     def startingReaction(self):
         pass
 
-    @staticmethod
+    
     def cooperate():
         return "cooperate"
 
-    @staticmethod
+    
     def defect():
         return "defect"
 
