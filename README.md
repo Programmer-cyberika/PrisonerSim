@@ -81,7 +81,7 @@ Run the script `executeTournament.py` using the following arguments:
 
 2. Specifying custom values:
    ```bash
-   python "executeTournament.py" --payoff path/to/payoff.json --rounds 200 --strategies TitForTat AlwaysCooperate Random
+   python "executeTournament.py" --payoff path/to/payoff.json --rounds 200 --strategies TitForTat,AlwaysCooperate,RandomStrategy
    ```
 
 ---
