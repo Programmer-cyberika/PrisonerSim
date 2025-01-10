@@ -1,92 +1,154 @@
-# **PrisonerSim**  
-A simulation of the **Prisoner's Dilemma** game inspired by Robert Axelrod's research, designed to explore and test strategies against classical approaches like **Tit-for-Tat**.
+# PrisonerSim
+
+[![GitHub Repository](https://img.shields.io/badge/GitHub-PrisonerSim-blue)](https://github.com/Programmer-cyberika/PrisonerSim)
+
+PrisonerSim is a Python project that simulates the Iterated Prisoner's Dilemma. The goal is to experiment with strategies and explore how different approaches perform over multiple rounds of the dilemma.
 
 ---
 
-## **Overview**  
-The Prisoner's Dilemma is a classic problem in **game theory** that explores cooperation and betrayal between two players. This project replicates the traditional game mechanics of the Prisoner's Dilemma, but with a **modified payoff matrix** designed to explore strategies against the classical **Tit-for-Tat**.
+## Features
+
+- Play the Iterated Prisoner's Dilemma with multiple strategies.
+- Customizable payoff matrix through JSON files (default payoff matrix is included).
+- Default values for the number of rounds and strategies simplify running simulations.
+- Simulate tournaments for specified strategies over multiple rounds.
+- View detailed outputs in the terminal, including round-wise results and final scores.
 
 ---
 
-## **Features**  
-- Simulates rounds of the **Prisoner's Dilemma** game.  
-- Implements strategies, including **Tit-for-Tat**.  
-- Allows for testing and exploration of custom strategies.  
-- Results and comparisons are provided for analysis.
+## Installation
 
----
+To run this project, ensure you have Python installed along with the required libraries.
 
-## **Modified Payoff Matrix**  
-The game uses the following modified payoff matrix:
+### Requirements
 
-|             | **Player 2: C2** | **Player 2: D2** |
-|-------------|------------------|------------------|
-| **Player 1: C1** | 3, 3              | 0, 5              |
-| **Player 1: D1** | 5, 0              | 1, 1              |
+Install the required libraries using the following command:
 
-- **C1, C2**: Both players cooperate, earning 3 points each.
-- **C1, D2**: Player 1 cooperates, Player 2 defects (Player 1 gets 0 points, Player 2 gets 5 points).
-- **D1, C2**: Player 1 defects, Player 2 cooperates (Player 1 gets 5 points, Player 2 gets 0 points).
-- **D1, D2**: Both players defect, earning 1 point each.
-
-### Objective  
-This simulation aims to test and explore strategies that can **outscore Tit-for-Tat** under this new payoff system. The goal is to identify strategies that have the potential to outperform Tit-for-Tat in real-world dilemmas, where cooperation and defection play a significant role.
-
----
-
-## **Getting Started**  
-
-### **1. Prerequisites**  
-Make sure you have the following installed:  
-- **Python 3.x**  
-
----
-
-### **2. Repository Status**  
-This project is in its early development phase. The core mechanics are being worked on, but feel free to explore and contribute ideas or improvements.
-
-To get started, clone the repository:  
 ```bash
-git clone https://github.com/Programmer-cyberika/PrisonerSim.git
-cd PrisonerSim
+pip install -r requirements.txt
 ```
 
----
+The `requirements.txt` file contains the following libraries:
 
-## **Planned Strategies**  
-- **Tit-for-Tat**  
-- **Random Strategy**  
-- **Always Cooperate**  
-- **Always Defect**  
-- Custom strategies for testing and optimization.
+- `argparse`
+- `colorama`
 
 ---
 
-## **Goals**  
-The primary goal of this project is to:  
-1. Replicate the game environment.  
-2. Explore and develop strategies that can **outperform Tit-for-Tat**.  
-3. Analyze results to gain insights into game theory and strategy optimization.  
-4. Implement and test various strategies, such as **Tit-for-Tat with forgiveness**, **Generous Tit-for-Tat**, **Grim Trigger**, and others.  
-5. Analyze and compare the effectiveness of each strategy against Tit-for-Tat.
+## Usage
+
+Run the script `executeTournament.py` using the following arguments:
+
+### Arguments:
+
+1. **`--payoff`**  
+   Path to the JSON file specifying the payoff matrix.  
+   Example JSON format:  
+   ```json
+   {
+       "CC": [3, 3],
+       "CD": [0, 5],
+       "DC": [5, 0],
+       "DD": [1, 1]
+   }
+   ```
+   > **Note:** If no JSON file is provided, the default payoff matrix will be used:
+   ```json
+   {
+       "CC": [3, 3],
+       "CD": [0, 5],
+       "DC": [5, 0],
+       "DD": [1, 1]
+   }
+   ```
+
+2. **`--rounds`**  
+   Specify the number of rounds to play in the tournament.  
+   > **Default:** 100 rounds.
+
+3. **`--strategies`**  
+   List of strategies to include in the tournament. Separate multiple strategies with spaces.  
+   > **Default Strategies:** Every built-in strategy: `TitForTat`, `AlwaysCooperate`, `AlwaysDefect`, `RandomStrategy`, `DoubleD`, `GrimTrigger`, `Pavlov`, and `GenerousTitForTat`.
 
 ---
 
-## **Contributions**  
-Contributions are welcome! Feel free to open an **issue** or submit a **pull request** with new strategies or improvements. To contribute, fork the repository and create a pull request.
+## Example Usage
+
+1. Using all defaults:
+   ```bash
+   python "executeTournament.py"
+   ```
+
+2. Specifying custom values:
+   ```bash
+   python "executeTournament.py" --payoff path/to/payoff.json --rounds 200 --strategies TitForTat AlwaysCooperate Random
+   ```
 
 ---
 
-## **License**  
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+## Adding or Editing Strategies
+
+To add new strategies or modify existing ones, follow these steps:
+
+1. **Locate the Strategy Classes**  
+   All strategies are implemented as subclasses of the `Strategy` class in the project in `strategyClasses.py`.
+
+2. **Create a New Strategy**  
+   Define a new class that inherits from `Strategy`. Implement the methods as defined in other strategies.  
+   Example:
+   ```python
+   class AlwaysCooperate(Strategy):
+       def __init__(self):
+           super().__init__()
+           self.strategyName = "Always Cooperate"
+
+       def reset(self):
+           pass
+
+       def cooperationReaction(self):
+           return self.cooperate()
+
+       def defectionReaction(self):
+           return self.cooperate()
+
+       def startingReaction(self):
+           self.reset()
+           return self.cooperate()
+   ```
+
+3. **Register the Strategy**  
+   The project dynamically maps strategies using the `Strategy.__subclasses__()` method, so your new class will automatically be included in the available strategies.
+
+4. **Test the Strategy**  
+   Add your new strategy to the `--strategies` argument when running the script and verify its behavior during the tournament.
+
+   Example:
+   ```bash
+   python "executeTournament.py" --strategies TitForTat AlwaysCooperate
+   ```
 
 ---
 
-## **Acknowledgments**  
-- Inspired by Robert Axelrod's research on the Prisoner's Dilemma.  
-- Game theory concepts developed by John Nash and others.
+## Acknowledgments
+
+This project is inspired by the rich field of game theory and the work of brilliant minds who have contributed to it. Special acknowledgment to **Professor Robert Axelrod**, whose seminal work on the Iterated Prisoner's Dilemma and the Tit-for-Tat strategy has paved the way for exploring cooperative and competitive behaviors in decision-making.  
+
+Additionally, a nod to other pioneers like **John Nash**, whose equilibrium theory underpins much of modern game theory, and **John von Neumann**, who co-founded the field of game theory itself. Their contributions have deeply influenced this project and the broader understanding of strategic interactions.
 
 ---
 
-## **Contact**  
-For questions, ideas, or feedback, feel free to reach out via GitHub.
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to this project, please fork the repository, make your changes, and submit a pull request.
+
+---
+
+## License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+## Repository
+
+[PrisonerSim GitHub Repository](https://github.com/Programmer-cyberika/PrisonerSim)
