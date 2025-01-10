@@ -197,6 +197,9 @@ class Tournament:
         result = match_obj.returnResult()
         self.keepScore(participant1.getStrategyName(), result[0])
         self.keepScore(participant2.getStrategyName(), result[1])
+
+    def getScore(self):
+        return self.score
         
 
     def runTournament(self):

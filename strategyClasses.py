@@ -107,7 +107,6 @@ class DoubleD(Strategy):
     def cooperationReaction(self):
         if(self.tracker!=0):
             return self.defect()
-            print("defected")
         else:
             return self.cooperate()
     
