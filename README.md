@@ -124,7 +124,7 @@ To add new strategies or modify existing ones, follow these steps:
 
    Example:
    ```bash
-   python "executeTournament.py" --strategies TitForTat AlwaysCooperate
+   python "executeTournament.py" --strategies TitForTat,AlwaysCooperate
    ```
 
 ---
